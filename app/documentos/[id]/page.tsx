@@ -114,16 +114,16 @@ export default function DocumentPage() {
         const blob = await response.blob();
 
         // Create a temporary link to trigger download
-        const link = document.createElement('a');
+        const link = window.document.createElement('a');
         link.href = URL.createObjectURL(blob);
 
         // Try to get a filename from the path
         const filename = document.file_path.substring(document.file_path.lastIndexOf('/') + 1) || `document-${document.id}`;
         link.download = filename;
 
-        document.body.appendChild(link);
+        window.document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link);
+        window.document.body.removeChild(link);
         URL.revokeObjectURL(link.href);
 
     } catch (error: any) {
