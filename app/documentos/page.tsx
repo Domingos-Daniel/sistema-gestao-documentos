@@ -23,6 +23,7 @@ interface Document {
   description?: string | null;
   tags?: string[] | null;
   file_path: string | null; 
+  file_size?: number | null;
   cover_image_path?: string | null; // <<< Use cover_image_path
   category_id: string;
   created_at: string;
@@ -310,8 +311,10 @@ export default function DocumentsPage() {
                   </CardContent>
                   <CardContent className="pt-0 pb-4">
                     <div className="flex justify-between items-center">
-                      {/* Use file_size */}
-                      <div className="text-xs text-muted-foreground">{(doc.file_size / 1024 / 1024).toFixed(2)} MB</div>
+                      {/* Corrigido para tratar valores nulos/undefined de file_size */}
+                      <div className="text-xs text-muted-foreground">
+                        {doc.file_size ? `${(doc.file_size / 1024 / 1024).toFixed(2)} MB` : 'Tamanho desconhecido'}
+                      </div>
                       <div className="flex space-x-2">
                         <Button variant="outline" size="sm" onClick={() => handleDownload(doc)} disabled={!doc.file_path}>
                           <Download className="mr-2 h-4 w-4" />
@@ -361,7 +364,8 @@ export default function DocumentsPage() {
                       <div className="flex items-center text-xs text-muted-foreground mt-1 flex-wrap gap-x-2">
                         <span className="truncate">{doc.categories?.name || "Sem categoria"}</span>
                         <span className="hidden sm:inline">•</span>
-                        <span>{(doc.file_size / 1024 / 1024).toFixed(2)} MB</span>
+                        {/* Corrigido para tratar valores nulos/undefined de file_size */}
+                        <span>{doc.file_size ? `${(doc.file_size / 1024 / 1024).toFixed(2)} MB` : 'Tamanho desconhecido'}</span>
                         {doc.tags && doc.tags.length > 0 && (
                           <>
                             <span className="hidden sm:inline">•</span>
