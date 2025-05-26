@@ -161,8 +161,8 @@ export default function DocumentsPage() {
   }
 
   // --- Download Handler using file_path and Signed URL ---
-  const handleDownload = async (document: Document) => {
-    if (!document.file_path) {
+  const handleDownload = async (doc: Document) => {
+    if (!doc.file_path) {
         alert("Arquivo não encontrado para este documento.");
         return;
     }
@@ -172,7 +172,7 @@ export default function DocumentsPage() {
         const expiresIn = 60 * 5; // URL valid for 5 minutes
         const { data, error: urlError } = await supabase.storage
           .from('documents') // Use the correct bucket name
-          .createSignedUrl(document.file_path, expiresIn);
+          .createSignedUrl(doc.file_path, expiresIn);
 
         if (urlError) throw urlError;
         if (!data?.signedUrl) throw new Error("Não foi possível gerar URL de download.");
@@ -185,16 +185,16 @@ export default function DocumentsPage() {
         const blob = await response.blob();
 
         // Create a temporary link to trigger download
-        const link = document.createElement('a');
+        const link = window.document.createElement('a');
         link.href = URL.createObjectURL(blob);
 
         // Try to get a filename from the path
-        const filename = document.file_path.substring(document.file_path.lastIndexOf('/') + 1) || `document-${document.id}`;
+        const filename = doc.file_path.substring(doc.file_path.lastIndexOf('/') + 1) || `document-${doc.id}`;
         link.download = filename;
 
-        document.body.appendChild(link);
+        window.document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link);
+        window.document.body.removeChild(link);
         URL.revokeObjectURL(link.href);
 
     } catch (error: any) {
